@@ -1,0 +1,113 @@
+html,
+body {
+    background: transparent url(../images/bg.png);
+    background-color: #262626;
+    font-family: "Roboto", sans-serif;
+    font-weight: normal;
+    color: #fff;
+}
+
+a {
+    color: #fdd75f !important;
+}
+
+#blackcontriner {
+    background-color: #0000009e;
+    width: 100%;
+}
+
+.top>img {
+    width: 30%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 10px 0px 0px 0px;
+}
+
+.auth {
+    float: right;
+    margin: 5px;
+}
+
+.loginMobile {
+    display: none;
+}
+
+.auth a {
+    padding: 0 5px;
+    text-transform: uppercase;
+}
+
+#navbarSupportedContent {
+    border-top: 1px solid #fff;
+    border-bottom: 1px solid #fff;
+}
+
+a.nav-link {
+    color: #fff !important;
+    text-transform: capitalize !important;
+    font-size: 20px;
+    min-width: 150px;
+    text-align: center;
+}
+
+a.nav-link:hover {
+    color: #fdd75f !important;
+}
+
+button.navbar-toggler {
+    float: left;
+    position: absolute;
+    top: -42px;
+    border: 1px solid #fff;
+}
+
+.nav-link i.fas {
+    display: table;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.gallery {
+    background: #00000080;
+    border-radius: 5px;
+    padding: 5px;
+    overflow: auto;
+}
+
+.gallery>.image {
+    float: left;
+    max-width: 40%;
+}
+
+.gallery>.image>img {
+    width: 100%;
+}
+
+.gallery>.details>button {
+    float: right;
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+}
+
+.gallery>.details>h1 {
+    color: #d7d10d;
+}
+
+@media (max-width: 760px) {
+    .auth {
+        display: none;
+    }
+    .loginMobile {
+        display: block !important;
+    }
+    .nav-link i.fas {
+        display: inline-block;
+    }
+    @media (max-width: 500px) {
+        button.navbar-toggler {
+            top: -30px !important;
+        }
+    }
+}
