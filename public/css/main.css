@@ -1,22 +1,29 @@
 html,
 body {
-    background: transparent url(../images/bg.png);
-    background-color: #262626;
+    /*background: transparent url(../images/bg.png);*/
+    background-color: #a46e5a;
     font-family: "Roboto", sans-serif;
     font-weight: normal;
     color: #fff;
 }
 
 a {
-    color: #fdd75f !important;
+    color: #fff !important;
+    text-decoration: none !important;
+}
+
+i {
+    color: #f6ff00;
 }
 
 #blackcontriner {
-    background-color: #0000009e;
+    background: transparent url(../images/bbg.png);
+    background-color: #3b190d;
+    background-repeat-x: no-repeat;
     width: 100%;
 }
 
-.top>img {
+.top>a>img {
     width: 30%;
     display: block;
     margin-left: auto;
@@ -25,8 +32,18 @@ a {
 }
 
 .auth {
-    float: right;
+    float: left;
     margin: 5px;
+    position: absolute;
+}
+
+.cart {
+    float: right;
+}
+
+.cart a {
+    font-size: 40px;
+    line-height: 2;
 }
 
 .loginMobile {
@@ -62,20 +79,22 @@ button.navbar-toggler {
     border: 1px solid #fff;
 }
 
-.nav-link i.fas {
+.nav-link i.fas,
+.nav-link i.fab {
     display: table;
     margin-left: auto;
     margin-right: auto;
 }
 
 .gallery {
-    background: #00000080;
+    background: #3b190de6;
     border-radius: 5px;
     padding: 5px;
     overflow: auto;
 }
 
 .gallery>.image {
+    padding: 5px;
     float: left;
     max-width: 40%;
 }
@@ -92,7 +111,60 @@ button.navbar-toggler {
 }
 
 .gallery>.details>h1 {
-    color: #d7d10d;
+    color: #f6ff00;
+}
+
+.card {
+    background-color: #3b190de6 !important;
+}
+
+.btn-primary {
+    color: #3f1e12;
+    background-color: #f6ff00 !important;
+    border-color: #f6ff00 !important;
+}
+
+.btn-primary a {
+    color: #3f1e12 !important;
+}
+
+.btn-primary a:hover {
+    color: #3f1e12 !important;
+}
+
+.btn-primary:hover {
+    color: #3f1e12;
+    background-color: #bcbcbc !important;
+    border-color: #bcbcbc !important;
+}
+
+#footer {
+    min-height: 100px;
+    background: #2f0f04;
+}
+
+.loader {
+    border: 16px solid #f3f3f3;
+    border-top: 16px solid #000;
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@media(max-width: 1600px) {
+    .auth {
+        display: inline-grid;
+    }
 }
 
 @media (max-width: 760px) {
@@ -102,12 +174,21 @@ button.navbar-toggler {
     .loginMobile {
         display: block !important;
     }
-    .nav-link i.fas {
+    .nav-link i.fas,
+    .nav-link i.fab {
         display: inline-block;
+    }
+    .cart a {
+        font-size: 30px;
     }
     @media (max-width: 500px) {
         button.navbar-toggler {
             top: -30px !important;
+        }
+        .cart a {
+            font-size: 25px;
+            position: absolute;
+            right: 15px;
         }
     }
 }
