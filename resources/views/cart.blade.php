@@ -107,12 +107,11 @@
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <label for="InputLocation">Location</label>
+                                            <label for="InputLocation">Address</label>
                                             <select class="form-control">
-                                                <option value="volvo">Philiphines</option>
-                                                <option value="saab">Saab</option>
-                                                <option value="mercedes">Mercedes</option>
-                                                <option value="audi">Audi</option>
+                                            @foreach ($addresses as $address)
+                                                <option value="{{ $address->id }}">{{ $address->full_address }}</option>
+                                            @endforeach
                                             </select>
                                             <small id="emailHelp" class="form-text text-muted">We'll never share your location with anyone else.</small>
                                         </div>
@@ -123,7 +122,8 @@
                                             </select>
                                         </div>
 
-                                        <button type="submit" class="btn btn-primary btn-lg btn-block">CHECK OUT</button>
+                                        <button type="submit" class="btn btn-primary btn-lg btn-block">Checkout using Credit card</button>
+                                        <button type="submit" class="btn btn-paypal btn-lg btn-block mb-2">Checkout using Paypal</button>
                                         <a class="btn btn-info btn-lg btn-block my-1" href="/">ORDER MORE</a>
                                     </form>
                                 </div>

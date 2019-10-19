@@ -12,24 +12,37 @@ use Auth;
 
 class CartController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $carts = Cart::with(['product'])->where('user_id', Auth::id())->get();
+        $user = $request->user();
+
+        if(!$user){
+            return redirect()->route('login');
+        }
+
+        $carts = Cart::with(['product'])->where('user_id', $user->id)->get();
         
         $categories = Category::get();
         $cart = null;
 
-        if(Auth::id())
-            $cart = Cart::where('user_id', Auth::id())->count();
+        if($request->user())
+            $cart_count = Cart::where('user_id', Auth::id())->count();
+
+
+        $addresses = $user->address()->get();
+
+        // dd($addresses);
         
         $total_price = 0;
         
-        return view('cart', [
-            'categories' => $categories,
-            'carts' => $carts,
-            'cart_count' => $cart,
-            'total_price' => $total_price,
-        ]);
+        return view('cart', compact('categories', 'carts', 'cart_count', 'total_price', 'addresses'));
+
+        // return view('cart', [
+        //     'categories' => $categories,
+        //     'carts' => $carts,
+        //     'cart_count' => $cart,
+        //     'total_price' => $total_price,
+        // ]);
     }
 
     public function addItem(Request $request)
@@ -61,6 +74,9 @@ class CartController extends Controller
 
     public function orderItem(Request $request)
     {
+        // process cc
+
+
         $product_ids = $request->product_ids;
         $product_quantities = $request->product_quantities;
         $total_price = $request->total_price;

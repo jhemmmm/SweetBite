@@ -31,12 +31,19 @@
                 <div class="top">
                     <div class="auth">
                         @guest
-                        <a href="/login"><i class="fas fa-sign-in-alt"></i> Login</a>
-                        <a href="/register"><i class="fas fa-user-plus"></i> Register</a>
+                            <a href="/login"><i class="fas fa-sign-in-alt"></i> Login</a>
+                            <a href="/register"><i class="fas fa-user-plus"></i> Register</a>
                         @else
-                        <a href="/login"><i class="fas fa-sign-in-alt"></i> My Orders</a>
-                        <a href="/register"><i class="fas fa-user-plus"></i> Setting</a>
-                        <a href="/register"><i class="fas fa-user-plus"></i> Logout</a>
+                            <a href="/login"><i class="fas fa-sign-in-alt"></i> My Orders</a>
+                            <a href="/register"><i class="fas fa-user-plus"></i> Setting</a>
+                            <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i class="fas fa-user-plus"></i> Logout</a>
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                @csrf
+                            </form>
+
+                            @if(in_array(auth()->id(), config('app.adminID')))
+                                <a href="/admin"><i class="fas fa-cog"></i> Admin Panel</a>
+                            @endif
                         @endguest
                     </div>
                     <div class="cart">
@@ -54,7 +61,6 @@
                     </button>
 
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                        <!-- Left Side Of Navbar -->
                         <ul class="navbar-nav mx-auto">
                             <div class="loginMobile">
                                 <li class="nav-item">

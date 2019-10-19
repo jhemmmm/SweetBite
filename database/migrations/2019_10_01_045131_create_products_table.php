@@ -19,7 +19,8 @@ class CreateProductsTable extends Migration
             $table->string('image', 255);
             $table->string('title', 255);
             $table->integer('price')->default(0);
-            $table->text('discreption');
+            $table->integer('quantity')->default(0);
+            $table->text('description');
             $table->timestamps();
         });
     }
