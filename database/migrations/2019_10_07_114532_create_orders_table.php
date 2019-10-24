@@ -19,6 +19,7 @@ class CreateOrdersTable extends Migration
             $table->integer('address_id');
             $table->integer('paid_price');
             $table->integer('status');
+            $table->integer('payment_method');
             $table->timestamps();
         });
     }

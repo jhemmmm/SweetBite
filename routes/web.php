@@ -19,7 +19,29 @@ Route::get('/cart/AddItem', 'CartController@addItem')->name('AddItem');
 
 Route::post('/cart/OrderItem', 'CartController@orderItem')->name('OrderItem');
 
+Route::get('/order/{id}/success', 'CartController@orderSuccess')->name('order.success');
+
 Auth::routes();
+Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
+    Route::get('/setting', 'UserController@setting')->name('user.setting');
+    Route::post('/setting', 'UserController@settingPost')->name('user.setting');
+    Route::group(['prefix' => 'addresses'], function () {
+        Route::get('/', 'UserController@addreses')->name('user.addresses');
+
+        Route::get('/create', 'UserController@createAddress')->name('user.addresses.create');
+        Route::post('/create', 'UserController@createAddressPost')->name('user.addresses.store');
+
+        Route::get('/{id}', 'UserController@editAddress')->name('user.addresses.edit');
+        Route::post('/{id}', 'UserController@editAddressPost')->name('user.addresses.update');
+
+        Route::delete('/{id}', 'UserController@deleteAddress')->name('user.addresses.delete');
+
+    });
+    Route::group(['prefix' => 'orders'], function () {
+        Route::get('/', 'UserController@orderHistory')->name('user.order.list');
+        Route::get('/{id}', 'UserController@orderHistory')->name('user.order.view');
+    });
+});
 Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
     Route::get('/', 'AdminController@index');
 

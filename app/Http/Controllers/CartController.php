@@ -10,6 +10,8 @@ use App\Order;
 use App\OrderProduct;
 use Auth;
 
+use Srmklive\PayPal\Facades\PayPal;
+
 class CartController extends Controller
 {
     public function index(Request $request)
@@ -21,7 +23,7 @@ class CartController extends Controller
         }
 
         $carts = Cart::with(['product'])->where('user_id', $user->id)->get();
-        
+
         $categories = Category::get();
         $cart = null;
 
@@ -32,9 +34,9 @@ class CartController extends Controller
         $addresses = $user->address()->get();
 
         // dd($addresses);
-        
+
         $total_price = 0;
-        
+
         return view('cart', compact('categories', 'carts', 'cart_count', 'total_price', 'addresses'));
 
         // return view('cart', [
@@ -74,8 +76,10 @@ class CartController extends Controller
 
     public function orderItem(Request $request)
     {
-        // process cc
 
+        $provider = PayPal::setProvider('express_checkout');
+
+        $data = [];
 
         $product_ids = $request->product_ids;
         $product_quantities = $request->product_quantities;
@@ -83,9 +87,10 @@ class CartController extends Controller
 
         $new_order = new Order;
         $new_order->user_id = Auth::id();
-        $new_order->address_id = 0;
+        $new_order->address_id = $request->address;
         $new_order->paid_price = $total_price;
-        $new_order->status = 0;
+        $new_order->status = $request->payment_method == 2 ? 0 : 3; // 0 means not paid // 1 = paid // 2 cancelled
+        $new_order->payment_method = $request->payment_method;
         $new_order->save();
 
         foreach($product_ids as $index => $product_id){
@@ -97,8 +102,54 @@ class CartController extends Controller
             $order_product->ordered_quantity = $quantity;
             $order_product->save();
 
-            Cart::where('product_id', $product_id)->where('user_id', Auth::id())->delete();
+            $product = Product::find($product_id);
+            $product->quantity = $product->quantity - $quantity;
+            $product->save();
+
+            $data['items'][] = [
+                'name' => $product->title,
+                'price' => $product->price,
+                'qty' => $quantity,
+                'desc' => $product->description
+            ];
+
+            if($request->payment_method == 1){
+                Cart::where('product_id', $product_id)->where('user_id', Auth::id())->delete();
+            }
+
         }
-        return "success";
+
+        $data['invoice_id'] = $new_order->id;
+        $data['invoice_description'] = "Order #{$data['invoice_id']} Invoice";
+        $data['return_url'] = route('order.success', $new_order->id);
+        $data['cancel_url'] = url('/cart');
+
+        $total = 0;
+
+        foreach($data['items'] as $item) {
+            $total += $item['price']*$item['qty'];
+        }
+
+        $data['total'] = $total;
+
+        // //give a discount of 10% of the order amount
+        // $data['shipping_discount'] = round((10 / 100) * $total, 2);
+
+        if($request->payment_method == 2){
+            $response = $provider->setExpressCheckout($data);
+
+            return response()->json([
+                'redirect_url' => $response['paypal_link'],
+            ]);
+
+        }else{
+            return response()->json([
+                'redirect_url' => route('order.success', $new_order->id)
+            ]);
+        }
+    }
+
+    public function orderSuccess(Request $request, $id){
+        dd($request->all());
     }
 }

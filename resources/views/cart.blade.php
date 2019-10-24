@@ -54,76 +54,26 @@
                                             <div class="row">
                                                 <div class="col-6"><h2>Total cost</h2></div>
                                                 <div class="col-6 text-right"><h2 style="color: #f6ff00" id="totalPrice">₱0</h2></div>
-                                                <script>
-                                                jQuery(function($) {
-                                                    var total = 0;
-                                                    $('input[type=number]').each(function (index, value) {
-                                                        var curThis = $(this);
-                                                        total = total + curThis.data('total');
-                                                    });
-                                                    $('#totalPrice').html("₱" + total);
-
-                                                    $('input[type=number]').on('input', function() {
-                                                        var curThis = $(this);
-                                                        var quantity = curThis.val();
-                                                        var price = curThis.data('price');
-                                                        curThis.data('total', quantity * price);
-
-                                                        total = 0;
-                                                        $('input[type=number]').each(function (index, value) {
-                                                            var curThis = $(this);
-                                                            total = total + curThis.data('total');
-                                                        });
-                                                        $('#totalPrice').html("₱" + total);
-                                                    });
-
-                                                    $( "#checkoutForm" ).submit(function( event ) {
-                                                        event.preventDefault();
-                                                       
-                                                        var product_ids = [];
-                                                        var product_quantities = [];
-                                                        $('input[type=number]').each(function (index, value) {
-                                                            var curThis = $(this);
-                                                            var id = curThis.data('id');
-                                                            var quantity = curThis.val();
-                                                            product_ids.push(id);
-                                                            product_quantities.push(quantity);
-                                                        });
-                                                        
-                                                        $('#mainDashboard').html('<div class="loader"></div>');
-
-                                                        $.post("/cart/OrderItem",{
-                                                            product_ids: product_ids,
-                                                            product_quantities: product_quantities,
-                                                            total_price: total,
-                                                        },function(data){
-                                                                $('#mainDashboard').html('<div class="col-12"><div class="alert alert-success" role="alert">Success</div></div>');
-                                                            });
-                                                        });
-                                                });
-
-                                                
-                                                </script>
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label for="InputLocation">Address</label>
-                                            <select class="form-control">
-                                            @foreach ($addresses as $address)
-                                                <option value="{{ $address->id }}">{{ $address->full_address }}</option>
-                                            @endforeach
+                                            <select class="form-control" name="address">
+                                                @foreach ($addresses as $address)
+                                                    <option value="{{ $address->id }}">{{ $address->full_address }}</option>
+                                                @endforeach
                                             </select>
                                             <small id="emailHelp" class="form-text text-muted">We'll never share your location with anyone else.</small>
                                         </div>
                                         <div class="form-group">
                                             <label for="InputPaymentOption">Payment Type</label>
-                                            <select class="form-control">
-                                                <option value="cod">Cash On Delivery</option>
+                                            <select class="form-control" name="payment_method">
+                                                <option value="1">Cash On Delivery</option>
+                                                <option value="2">Paypal</option>
                                             </select>
                                         </div>
 
-                                        <button type="submit" class="btn btn-primary btn-lg btn-block">Checkout using Credit card</button>
-                                        <button type="submit" class="btn btn-paypal btn-lg btn-block mb-2">Checkout using Paypal</button>
+                                        <button type="submit" class="btn btn-primary btn-lg btn-block mb-2">Checkout</button>
                                         <a class="btn btn-info btn-lg btn-block my-1" href="/">ORDER MORE</a>
                                     </form>
                                 </div>
@@ -142,4 +92,72 @@
         </div>
     </div>
 </div>
+
+<script>
+    jQuery(function($) {
+        var total = 0;
+        $('input[type=number]').each(function (index, value) {
+            var curThis = $(this);
+            total = total + curThis.data('total');
+        });
+        $('#totalPrice').html("₱" + total);
+
+        $('input[type=number]').on('input', function() {
+            var curThis = $(this);
+            var quantity = curThis.val();
+            var price = curThis.data('price');
+            curThis.data('total', quantity * price);
+
+            total = 0;
+            $('input[type=number]').each(function (index, value) {
+                var curThis = $(this);
+                total = total + curThis.data('total');
+            });
+            $('#totalPrice').html("₱" + total);
+        });
+
+
+        var payment_method =  $('select[name="payment_method"]').val()
+        var address = $('select[name="address"]').val()
+
+        $('select[name="payment_method"]').change(function(){
+            payment_method = $(this).val();
+        })
+        $('select[name="address"]').change(function(){
+            address = $(this).val();
+        })
+
+        $( "#checkoutForm" ).submit(function( event ) {
+            event.preventDefault();
+
+            var product_ids = [];
+            var product_quantities = [];
+            $('input[type=number]').each(function (index, value) {
+                var curThis = $(this);
+                var id = curThis.data('id');
+                var quantity = curThis.val();
+                product_ids.push(id);
+                product_quantities.push(quantity);
+            });
+
+            $('#mainDashboard').html('<div class="loader"></div>');
+
+            $.post("/cart/OrderItem",{
+                payment_method: payment_method,
+                address: address,
+                product_ids: product_ids,
+                product_quantities: product_quantities,
+                total_price: total,
+            },function(data){
+                console.log(data);
+
+                $('#mainDashboard').html('<div class="col-12"><div class="alert alert-warning" role="alert">Redirecting.. Please wait</div></div>');
+
+                setTimeout(function(){
+                    window.location.href = data.redirect_url
+                }, 2000);
+            });
+        });
+    });
+</script>
 @endsection

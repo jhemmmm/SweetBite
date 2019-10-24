@@ -19,9 +19,11 @@ class Order extends Model
 
     public function getStatusTypeAttribute(){
         if($this->status == 1){
-            return 'Paid';
+            return 'Delivered';
         }else if($this->status == 2){
-            return 'Refunded';
+            return 'Shipped';
+        }else if($this->status = 3){
+            return 'Processing';
         }else{
             return 'Unpaid';
         }

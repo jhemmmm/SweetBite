@@ -197,3 +197,18 @@ button.navbar-toggler {
 .btn-paypal{
     background: #3b7bbf;
 }
+
+.list-group-item-action{
+    background-color: #6b473c;
+}
+.list-group-item-action:hover{
+    background-color: #6b473c;
+}
+.list-group-item-action:focus{
+    background-color: #6b473c;
+}
+.list-group-item.active{
+    background-color: #3b190d;
+    border-color: #3b190d;
+
+}

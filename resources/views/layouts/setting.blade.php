@@ -22,7 +22,6 @@
     <link href="{{ asset('fontawesome/css/all.css') }}" rel="stylesheet">
     <link href="{{ asset('css/app.css') }}?v=1" rel="stylesheet">
     <link href="{{ asset('css/main.css') }}?v=7" rel="stylesheet">
-
 </head>
 
 <body>
@@ -97,7 +96,27 @@
         </div>
 
         <main class="py-4" style="min-height: 600px;">
-            @yield('content')
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="list-group">
+                            <a href="{{ route('user.setting') }}" class="list-group-item list-group-item-action {{ Route::currentRouteName() == 'user.setting' ? 'active' : '' }}">Setting</a>
+                            <a href="{{ route('user.addresses') }}" class="list-group-item list-group-item-action {{ in_array(Route::currentRouteName(), [
+                                'user.addresses',
+                                'user.addresses.create',
+                                'user.addresses.edit',
+                            ]) ? 'active' : '' }}">Addresses</a>
+                            <a href="{{ route('user.order.list') }}" class="list-group-item list-group-item-action {{ in_array(Route::currentRouteName(), [
+                                'user.order.list',
+                                'user.order.view',
+                            ]) ? 'active' : '' }}">Order History</a>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        @yield('content')
+                    </div>
+                </div>
+            </div>
         </main>
 
         <footer>
