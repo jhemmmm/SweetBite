@@ -13,9 +13,8 @@
             @endif
 
             <div class="float-right">
-                <form action="">
-                    <a href="" class="btn btn-danger btn-sm">Cancel Order</a>
-
+                <form action="{{ route('user.order.cancel', $order->id) }}">
+                    <button class="btn btn-danger btn-sm" {{ $order->status != 3 ? 'disabled' : '' }} onclick="return confirm('Are you sure you want to cancel your order?');">Cancel Order</button>
                 </form>
             </div>
             <div class="clearfix"></div>

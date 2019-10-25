@@ -34,11 +34,17 @@ class Order extends Model
             return 'Delivered';
         }else if($this->status == 2){
             return 'Shipped';
-        }else if($this->status = 3){
+        }else if($this->status == 3){
             return 'Processing';
+        }else if($this->status == 5){
+            return 'Cancelled';
         }else{
             return 'Unpaid';
         }
+    }
+
+    public function invoice(){
+        return $this->hasOne(Invoice::class);
     }
 
 }

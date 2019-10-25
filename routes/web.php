@@ -40,7 +40,15 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
     Route::group(['prefix' => 'orders'], function () {
         Route::get('/', 'UserController@orderHistory')->name('user.order.list');
         Route::get('/{id}', 'UserController@orderDetails')->name('user.order.view');
+        Route::post('/{id}', 'UserController@orderCancel')->name('user.order.cancel');
     });
+});
+use Srmklive\PayPal\Facades\PayPal;
+
+Route::get('test', function () {
+    $provider = Paypal::setProvider('express_checkout');
+    $test = $provider->getExpressCheckoutDetails('EC-32V962918E541681W');
+    dd($test);
 });
 Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
     Route::get('/', 'AdminController@index');

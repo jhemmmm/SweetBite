@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Category;
 use App\Product;
 use App\Cart;
+use App\Invoice;
 use App\Order;
 use App\OrderProduct;
 use Auth;
@@ -89,7 +90,7 @@ class CartController extends Controller
         $new_order->user_id = Auth::id();
         $new_order->address_id = $request->address;
         $new_order->paid_price = $total_price;
-        $new_order->status = $request->payment_method == 2 ? 0 : 3; // 0 means not paid // 1 = paid // 2 cancelled
+        $new_order->status = 0; // 0 means not paid // 1 = paid // 2 cancelled
         $new_order->payment_method = $request->payment_method;
         $new_order->save();
 
@@ -135,8 +136,15 @@ class CartController extends Controller
         // //give a discount of 10% of the order amount
         // $data['shipping_discount'] = round((10 / 100) * $total, 2);
 
+        $invoice = new Invoice;
+        $invoice->order_id = $new_order->id;
+        $invoice->save();
+
         if($request->payment_method == 2){
             $response = $provider->setExpressCheckout($data);
+
+            $invoice->transaction_token = $response['TOKEN'];
+            $invoice->save();
 
             return response()->json([
                 'redirect_url' => $response['paypal_link'],
@@ -150,6 +158,36 @@ class CartController extends Controller
     }
 
     public function orderSuccess(Request $request, $id){
-        dd($request->all());
+
+        $invoice = Invoice::where('transaction_token', $request->token)->firstOrFail();
+
+        $provider = PayPal::setProvider('express_checkout');
+        $response = $provider->getExpressCheckoutDetails($request->token);
+
+        $order = Order::with(['products'])->findOrFail($invoice->order_id);
+        if($response['BILLINGAGREEMENTACCEPTEDSTATUS'] != 1){
+            $order->status = 5;
+            foreach($order->products as $product){
+                $prod = Product::where('id', $product->product_id)->first();
+
+                $prod->quantity = $prod->quantity + $product->ordered_quantity;
+                $prod->save();
+            }
+            $order->save();
+
+            $message = 'Your Order has been cancelled';
+        }
+
+
+        if($order->status == 0){
+            $order->status = 3;
+            $order->save();
+        }else{
+            abort(401);
+        }
+
+        $message = 'Your Order has been successfully placed';
+
+        return view('success', compact('message'));
     }
 }
