@@ -47,7 +47,7 @@ use Srmklive\PayPal\Facades\PayPal;
 
 Route::get('test', function () {
     $provider = Paypal::setProvider('express_checkout');
-    $test = $provider->getExpressCheckoutDetails('EC-32V962918E541681W');
+    $test = $provider->getTransactionDetails('EC-65T20319R2816522L', 'Order');
     dd($test);
 });
 Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
@@ -70,5 +70,12 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
 
     Route::group(['prefix' => 'order'], function () {
         Route::get('/', 'AdminController@orderLists')->name('admin.order.list');
+        Route::get('/{id}', 'AdminController@orderView')->name('admin.order.view');
+        Route::post('/{id}', 'AdminController@orderUpdateStatus')->name('admin.order.view');
+    });
+
+    Route::group(['prefix' => 'invoice'], function () {
+       Route::get('/', 'AdminController@invoiceList')->name('admin.invoice.list'); 
+       Route::get('/{id}', 'AdminController@invoiceView')->name('admin.invoice.view'); 
     });
 });

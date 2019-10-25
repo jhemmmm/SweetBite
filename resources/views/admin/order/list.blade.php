@@ -22,7 +22,7 @@
                <td>₱{{ number_format($order->paid_price, 2) }}</td>
                <td>{{ $order->user->name }}</td>
                <td>
-                  <a href="" class="btn btn-primary btn-sm">View</a>
+                  <a href="{{ route('admin.order.view', $order->id) }}" class="btn btn-primary btn-sm">View</a>
                </td>
             </tr>
          @endforeach

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Category;
+use App\Invoice;
 use App\Order;
 use App\Product;
 use App\User;
@@ -141,5 +142,45 @@ class AdminController extends Controller{
         $orders = Order::all();
 
         return view('admin.order.list', compact('orders'));
+    }
+
+    public function orderView($id){
+        $order = Order::findOrFail($id);
+
+        return view('admin.order.view', compact('order'));
+    }
+
+    public function orderUpdateStatus(Request $request, $id){
+        $order = Order::with('invoice')->findOrFail($id);
+
+        if($request->status == 'shipped'){
+            $order->status = 2;
+        }else{
+            $order->status = 1;
+        }
+
+        $order->save();
+
+        return redirect()->route('admin.order.view', $id)->with([
+            'status' => true,
+            'message' => 'Succesfully updated'
+        ]);
+        
+    }
+
+    public function invoiceList(){
+        
+    }
+
+    public function invoiceView($id){
+        $invoice = Invoice::with([
+            'order' => function($q){
+                $q->with(['address', 'user']);
+            }
+        ])->findOrFail($id);
+
+        // dd($invoice);
+
+        return view('admin.invoice.view', compact('invoice'));
     }
 }
