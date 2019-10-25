@@ -147,4 +147,17 @@ class UserController extends Controller{
 
         return view('user.order.list', compact('orders'));
     }
+
+    public function orderDetails($id){
+        $order = Order::where('user_id', auth()->id())->where('id', $id)
+            ->with(['products', 'address'])
+            ->firstOrFail();
+
+            $total = 0;
+        foreach($order->products as $product){
+            $total += $product->pivot->ordered_quantity * $product->price;
+        }
+
+        return view('user.order.view', compact('order', 'total'));
+    }
 }

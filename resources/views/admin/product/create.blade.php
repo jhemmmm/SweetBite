@@ -68,11 +68,11 @@
                     </div>
                     <div class="mt-2 float-right">
                         @csrf
-                        <button class="btn btn-primary">Update</button>
+                        <button class="btn btn-primary">Create</button>
                     </div>
                 </form>
             </div>
         </div>
-    </div>    
+    </div>
 </div>
 @endsection

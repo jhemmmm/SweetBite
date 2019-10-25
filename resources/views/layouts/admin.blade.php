@@ -53,7 +53,10 @@
                                     </div>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ route('admin.order.list') }}" class="nav-link"><i class="fa fa-home fa-fw"></i> Order History</a>
+                                    <a href="{{ route('admin.order.list') }}" class="nav-link"><i class="fa fa-table fa-fw"></i> Order History</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.order.list') }}" class="nav-link"><i class="fa fa-file-invoice fa-fw"></i> Invoices</a>
                                 </li>
                                 <li class="nav-item">
                                     <a href="{{ route('admin.user.list') }}" class="nav-link"><i class="fa fa-users fa-fw"></i> Users</a>

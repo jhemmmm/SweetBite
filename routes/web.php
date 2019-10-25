@@ -39,7 +39,7 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
     });
     Route::group(['prefix' => 'orders'], function () {
         Route::get('/', 'UserController@orderHistory')->name('user.order.list');
-        Route::get('/{id}', 'UserController@orderHistory')->name('user.order.view');
+        Route::get('/{id}', 'UserController@orderDetails')->name('user.order.view');
     });
 });
 Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {

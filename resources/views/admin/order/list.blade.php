@@ -1,6 +1,9 @@
 @extends('layouts.admin')
 
 @section('content')
+
+    <h2 class="page-title mb-2">Order History</h2>
+    <hr class="mt-2"/>
    <table class="table">
       <thead>
          <tr>
