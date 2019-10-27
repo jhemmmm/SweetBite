@@ -1,9 +1,5 @@
 @extends('layouts.app')
 
-@section('cart')
-<a href="/cart"><i class="fas fa-shopping-cart"></i> ({{ (isset($cart_count)) ? $cart_count : 0 }})</a>
-@endsection
-
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
@@ -12,7 +8,7 @@
                 <div class="card-header">CART DASHBOARD</div>
                 <div class="card-body">
                     <div id="mainDashboard" class="row justify-content-center">
-                     @if(isset($cart_count))
+                     @if(isset($cart_count) && $cart_count != 0)
                         <!--- Left Side -->
                         <div class="col-12 col-md-8">
                             <div class="table-responsive">
@@ -33,7 +29,7 @@
                                                     </th>
                                                 <td>
                                                     <h3>₱{{ $cart->product->price }}</h3><br>
-                                                    <a href="#"><i class="fas fa-trash-alt"></i></a>
+                                                    <a href="{{ route('cart.delete', $cart->id) }}"><i class="fas fa-trash-alt"></i></a>
                                                 </td>
                                                 <td><input type="number" data-id="{{ $cart->product->id }}" data-price="{{ $cart->product->price }}" data-total="{{ $cart->quantity * $cart->product->price }}" value="{{ $cart->quantity }}" min="1" max="10" step="1"/></td>
                                             </tr>
@@ -52,6 +48,8 @@
                                         @csrf
                                         <div class="form-group">
                                             <div class="row">
+                                                <div class="col-6"><h5>Shipping cost</h5></div>
+                                                <div class="col-6 text-right"><h5 style="color: #f6ff00">₱{{ count($carts) != 0 ? '100' : '0' }}</h5></div>
                                                 <div class="col-6"><h2>Total cost</h2></div>
                                                 <div class="col-6 text-right"><h2 style="color: #f6ff00" id="totalPrice">₱0</h2></div>
                                             </div>
@@ -84,6 +82,7 @@
                             <div class="alert alert-warning" role="alert">
                                 You have 0 items in your cart!
                             </div>
+                            <a class="btn btn-info btn-lg btn-block my-1" href="/">Order Now</a>
                         </div>
                         @endif
                     </div>
@@ -100,7 +99,12 @@
             var curThis = $(this);
             total = total + curThis.data('total');
         });
-        $('#totalPrice').html("₱" + total);
+        if(total == 0){
+            $('#totalPrice').html("₱" + total);
+        }else{
+            total = parseInt(total) + 100;
+            $('#totalPrice').html("₱" + total);
+        }
 
         $('input[type=number]').on('input', function() {
             var curThis = $(this);
@@ -113,6 +117,8 @@
                 var curThis = $(this);
                 total = total + curThis.data('total');
             });
+            total = parseInt(total) + 100;
+
             $('#totalPrice').html("₱" + total);
         });
 
@@ -152,10 +158,14 @@
                 console.log(data);
 
                 $('#mainDashboard').html('<div class="col-12"><div class="alert alert-warning" role="alert">Redirecting.. Please wait</div></div>');
-
-                setTimeout(function(){
-                    window.location.href = data.redirect_url
-                }, 2000);
+                if(data.status){
+                    setTimeout(function(){
+                        window.location.href = data.redirect_url
+                    }, 2000);
+                }else{
+                    alert(data.message);
+                    window.location.reload();
+                }
             });
         });
     });

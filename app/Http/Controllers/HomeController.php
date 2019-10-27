@@ -13,7 +13,26 @@ class HomeController extends Controller
     public function index()
     {
         $categories = Category::get();
-        $products = Product::paginate(14);
+        $products = Product::where('quantity', '>', 0)->paginate(14);
+
+        return view('welcome', [
+            'categories' => $categories,
+            'products' => $products,
+        ]);
+    }
+
+    public function about(){
+        return view('about');
+    }
+
+    public function product(Request $request)
+    {
+        $category_id = $request->category;
+        if(!$category_id)
+            abort(404);
+
+        $categories = Category::get();
+        $products = Product::where('category_id', $category_id)->where('quantity', '>', 0)->paginate(14);
         $cart = null;
 
         if(Auth::id())
@@ -25,22 +44,9 @@ class HomeController extends Controller
         ]);
     }
 
-    public function product(Request $request)
-    {
-        $category_id = $request->category;
-        if(!$category_id)
-            abort(404);
+    public function productDetail($id){
+        $product = Product::where('id', $id)->firstOrFail();
 
-        $categories = Category::get();
-        $products = Product::where('category_id', $category_id)->paginate(14);
-        $cart = null;
-
-        if(Auth::id())
-            $cart = Cart::where('user_id', Auth::id())->count();
-        return view('welcome', [
-            'categories' => $categories,
-            'products' => $products,
-            'cart_count' => $cart,
-        ]);
+        return view('product.details', compact('product'));
     }
 }

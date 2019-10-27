@@ -6,6 +6,11 @@
         <div class="card">
             <div class="card-body">
                 <h3 class="card-title">Add new Product</h3>
+                @if (session('status') || session('message'))
+                    <div class="alert {{ session('status') ? 'alert-success' : 'alert-danger'}}">
+                        {{ session('message') }}
+                    </div>
+                @endif
                 <form method="POST" action="{{ route('admin.product.store') }}" enctype="multipart/form-data">
                     <div class="mb-2">
                         <label class="form-label">Title</label>

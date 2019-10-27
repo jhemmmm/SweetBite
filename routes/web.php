@@ -12,9 +12,13 @@
 */
 
 Route::get('/', 'HomeController@index')->name('home');
+Route::get('/about', 'HomeController@about')->name('about');
 Route::get('/product', 'HomeController@product')->name('prudct');
+Route::get('/product/{id}', 'HomeController@productDetail')->name('product.view');
+Route::post('/product/{id}/review', 'UserController@createReview')->name('product.review')->middleware('auth');
 
 Route::get('/cart', 'CartController@index')->name('cart');
+Route::get('/cart/{id}/delete', 'CartController@cartDelete')->name('cart.delete')->middleware('auth');
 Route::get('/cart/AddItem', 'CartController@addItem')->name('AddItem');
 
 Route::post('/cart/OrderItem', 'CartController@orderItem')->name('OrderItem');
@@ -43,12 +47,17 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
         Route::post('/{id}', 'UserController@orderCancel')->name('user.order.cancel');
     });
 });
-use Srmklive\PayPal\Facades\PayPal;
-
+use Nexmo\Laravel\Facade\Nexmo;
 Route::get('test', function () {
-    $provider = Paypal::setProvider('express_checkout');
-    $test = $provider->getTransactionDetails('EC-65T20319R2816522L', 'Order');
-    dd($test);
+
+
+    dd($number);
+
+    // Nexmo::message()->send([
+    //     'to'   => '639473430305',
+    //     'from' => '639217421936',
+    //     'text' => 'Using the facade to send a message.'
+    // ]);
 });
 Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
     Route::get('/', 'AdminController@index');
@@ -75,7 +84,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
     });
 
     Route::group(['prefix' => 'invoice'], function () {
-       Route::get('/', 'AdminController@invoiceList')->name('admin.invoice.list'); 
-       Route::get('/{id}', 'AdminController@invoiceView')->name('admin.invoice.view'); 
+       Route::get('/', 'AdminController@invoiceList')->name('admin.invoice.list');
+       Route::get('/{id}', 'AdminController@invoiceView')->name('admin.invoice.view');
     });
 });

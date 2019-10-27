@@ -6,6 +6,11 @@
         <div class="card">
             <div class="card-body">
                 <h3 class="card-title">Update User ({{  $user->name }})</h3>
+                @if (session('status') || session('message'))
+                    <div class="alert {{ session('status') ? 'alert-success' : 'alert-danger'}}">
+                        {{ session('message') }}
+                    </div>
+                @endif
                 <form method="POST">
                     <div class="mb-2">
                         <label class="form-label">Name</label>
@@ -41,6 +46,6 @@
                 </form>
             </div>
         </div>
-    </div>    
+    </div>
 </div>
 @endsection

@@ -21,6 +21,9 @@
                     @endif
                     @csrf
                     <a href="{{ route('admin.invoice.view', $order->invoice->id) }}" class="btn btn-info btn-sm">Invoice</a>
+                    @if($order->status != 5 && $order->status != 2 && $order->status != 1 && $order->status != 0)
+                        <a href="{{ route('admin.invoice.view', $order->invoice->id) }}" class="btn btn-danger btn-sm">Refund</a>
+                    @endif
                 </form>
             </div>
             <h3 class="card-title">Order #{{ $order->id }} Details</h3>
@@ -68,12 +71,12 @@
                             </tr>
                         @endforeach
                         <tr>
-                            <td colspan="3" class="text-right"><b>Delivery Fee:</b></td>
-                            <td>{{ number_format(50, 2) }}</td>
+                            <td colspan="3" class="text-right"><b>Shipping Fee:</b></td>
+                            <td>{{ number_format(200, 2) }}</td>
                         </tr>
                         <tr>
                             <td colspan="3" class="text-right"><b>Grand Total:</b></td>
-                            <td>{{ number_format($order->paid_price + 50, 2) }}</td>
+                            <td>{{ number_format($order->paid_price, 2) }}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -81,5 +84,5 @@
         </div>
     </div>
 </div>
-   
+
 @endsection

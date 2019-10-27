@@ -8,33 +8,51 @@ use App\Invoice;
 use App\Order;
 use App\Product;
 use App\User;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Nexmo\Laravel\Facade\Nexmo;
 use Image;
 
 class AdminController extends Controller{
-    
+
 
     public function index(){
-        return view('admin.index');
+
+        $orders = Order::orderBy('created_at', 'DESC')->whereIn('status', [3])->whereDate('created_at', Carbon::now()->toDateString())->paginate(10);
+
+        $shipped = Order::where('status', 2)->count();
+
+        $dailyEarnings = Order::whereDate('created_at', Carbon::now()->toDateString())->select(DB::raw('sum(paid_price) as total_amount'))->first();
+;
+
+        $pendingPayments = Order::whereDate('created_at', Carbon::now()->toDateString())->where('status', 0)->count();
+
+        $cancelled = Invoice::whereDate('created_at', Carbon::now()->toDateString())->where('status', 3)->count();
+
+        $refunded = Invoice::whereDate('created_at', Carbon::now()->toDateString())->where('status', 2)->count();
+
+
+        return view('admin.index', compact('orders', 'shipped', 'dailyEarnings', 'pendingPayments', 'cancelled', 'refunded'));
     }
 
 
     public function userLists(){
-        $users = User::all();
+        $users = User::paginate(15);
 
         return view('admin.user.list', compact('users'));
     }
 
     public function userUpdate($id){
         $user = User::findOrFail($id)->first();
-        
+
         return view('admin.user.update', compact('user'));
     }
 
     public function userPostUpdate(Request $request, $id){
 
         $user = User::findOrFail($id);
-        
+
         $request->validate([
             'name' => 'required',
             'email' => 'required', 'string', 'email', 'max:255', 'unique:users,id,'.$user->id,
@@ -48,16 +66,22 @@ class AdminController extends Controller{
             $user->save();
         }
 
-        return redirect()->route('admin.user.update', $user->id);
+        return redirect()->route('admin.user.update', $user->id)->with([
+            'status' => true,
+            'message' => 'User Updated!'
+        ]);
     }
 
     public function userDelete($id){
-        
+
         $user = User::findOrFail($id);
 
         $user->delete();
 
-        return redirect()->route('admin.user.list');
+        return redirect()->route('admin.user.list')->with([
+            'status' => true,
+            'message' => 'User Deleted!'
+        ]);
 
     }
 
@@ -71,7 +95,7 @@ class AdminController extends Controller{
 
     public function productUpdate($id){
         $product = Product::findOrFail($id);
-        
+
         $categories = Category::get();
 
         return view('admin.product.update', compact('product', 'categories'));
@@ -93,12 +117,15 @@ class AdminController extends Controller{
 
         if($request->has('image')){
             $image = Image::make($request->image->getRealPath())->resize(300, 300)->save(public_path('images/products/'.$id . '_'. md5(time()) .'.jpg'));
-            
+
             $product->image = '/images/products/'.$id . '_'. md5(time()) .'.jpg';
             $product->save();
         }
 
-        return redirect()->route('admin.product.update', $id);
+        return redirect()->route('admin.product.update', $id)->with([
+            'status' => true,
+            'message' => 'Product Updated!'
+        ]);
     }
 
     public function productCreate(){
@@ -106,7 +133,7 @@ class AdminController extends Controller{
 
         return view('admin.product.create', compact('categories'));
     }
-    
+
     public function productStore(Request $request){
         $request->validate([
             'title' => 'required',
@@ -116,7 +143,7 @@ class AdminController extends Controller{
             'image' => 'required|file',
             'description' => 'required',
         ]);
-        
+
         $product = Product::create($request->except(['_token', 'image']));
 
         $image = Image::make($request->image->getRealPath())->resize(300, 300)->save(public_path('images/products/'.$product->id . '_'. md5(time()) .'.jpg'));
@@ -124,7 +151,10 @@ class AdminController extends Controller{
         $product->image = '/images/products/'.$product->id . '_'. md5(time()) .'.jpg';
         $product->save();
 
-        return redirect()->route('admin.product.list');
+        return redirect()->route('admin.product.list')->with([
+            'status' => true,
+            'message' => 'Product Added!'
+        ]);
 
     }
 
@@ -133,13 +163,16 @@ class AdminController extends Controller{
 
         $product->delete();
 
-        return redirect()->route('admin.product.list');
+        return redirect()->route('admin.product.list')->with([
+            'status' => true,
+            'message' => 'Product Deleted!'
+        ]);
     }
 
     // order list function
 
     public function orderLists(){
-        $orders = Order::all();
+        $orders = Order::latest()->paginate(20);
 
         return view('admin.order.list', compact('orders'));
     }
@@ -153,10 +186,26 @@ class AdminController extends Controller{
     public function orderUpdateStatus(Request $request, $id){
         $order = Order::with('invoice')->findOrFail($id);
 
+        $number = $order->address->mobile_number;
+
+        $number = substr($number, 1);
+
+        $number = '63'. $number;
+
         if($request->status == 'shipped'){
             $order->status = 2;
+            Nexmo::message()->send([
+                'to'   => $number,
+                'from' => '639217421936',
+                'text' => 'Order # '.$order->id.' has been shipped'
+            ]);
         }else{
             $order->status = 1;
+            Nexmo::message()->send([
+                'to'   => $number,
+                'from' => '639217421936',
+                'text' => 'Order # '.$order->id.' is succesfully delivered'
+            ]);
         }
 
         $order->save();
@@ -165,11 +214,11 @@ class AdminController extends Controller{
             'status' => true,
             'message' => 'Succesfully updated'
         ]);
-        
+
     }
 
     public function invoiceList(){
-        
+
     }
 
     public function invoiceView($id){

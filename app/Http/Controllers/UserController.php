@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Address;
 use App\Order;
+use App\Product;
+use App\Review;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Srmklive\PayPal\Facades\PayPal;
 
 class UserController extends Controller{
 
@@ -143,7 +146,7 @@ class UserController extends Controller{
     public function orderHistory(Request $request){
         $user = $request->user();
 
-        $orders = $user->orders()->paginate(10);
+        $orders = $user->orders()->latest()->paginate(10);
 
         return view('user.order.list', compact('orders'));
     }
@@ -153,11 +156,67 @@ class UserController extends Controller{
             ->with(['products', 'address'])
             ->firstOrFail();
 
-            $total = 0;
+        $total = 0;
         foreach($order->products as $product){
             $total += $product->pivot->ordered_quantity * $product->price;
         }
 
         return view('user.order.view', compact('order', 'total'));
+    }
+
+    public function orderCancel($id){
+        $order = Order::findOrFail($id);
+        $invoice = $order->invoice;
+
+        if($order->payment_method == 2 && $order->status == 3){
+            $provider = PayPal::setProvider('express_checkout');
+
+            $partial = ($order->paid_price * 0.20) - $order->paid_price;
+            $response = $provider->refundTransaction($invoice->transaction_id, $partial);
+            if($response['ACK'] == 'Success'){
+                $order->status = 5;
+                $order->save();
+                $invoice->status = 2;
+                $invoice->save();
+            }
+        }else if($order->payment_method == 1 && $order->status == 3){
+            $order->status = 5;
+            $order->save();
+            $invoice->status = 3;
+            $invoice->save();
+        }
+
+        foreach($order->products as $product){
+            $prod = Product::where('id', $product->id)->first();
+
+            $prod->quantity = $prod->quantity + $product->ordered_quantity;
+            $prod->save();
+        }
+
+        return redirect()->route('user.order.list');
+
+    }
+
+    //product reivew
+
+    public function createReview(Request $request, $id){
+        $request->validate([
+            'message' => 'required'
+        ]);
+
+        $user = $request->user();
+
+        $review = new Review;
+        $review->user_id = $user->id;
+        $review->product_id = $id;
+        $review->message = $request->message;
+
+        $review->save();
+
+        return redirect()->route('product.view', $id)->with([
+            'status' => true,
+            'message' => 'Successfully submit review'
+        ]);
+
     }
 }

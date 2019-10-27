@@ -57,7 +57,7 @@ class RegisterController extends Controller
             'province' => ['required', 'string', 'min:3'],
             'city' => ['required', 'string', 'min:3'],
             'barangay' => ['required', 'string', 'min:3'],
-            'mobile' => ['required', 'numeric', 'min:10'],
+            'mobile' => ['required', 'numeric', 'min:11', 'regex:/^(09|\+639)\d{9}$/'],
         ]);
     }
 

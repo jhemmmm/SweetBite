@@ -22,7 +22,7 @@
                         <tr>
                             <td scope="row">Transaction ID</td>
                             <td>
-                                {{ $invoice->transaction_token }}
+                                {{ $invoice->transaction_id }}
                             </td>
                         </tr>
                         <tr>
@@ -31,11 +31,11 @@
                                 {{ number_format($invoice->order->paid_price, 2) }}
                             </td>
                         </tr>
-                        @if($invoice->status == 1)
+                        @if($invoice->status == 2 || $invoice->status == 3)
                         <tr>
                             <td scope="row">Status</td>
                             <td class="text-danger">
-                                <b>REFUNDED</b>
+                                <b>{{ $invoice->status == 2 ? 'Refunded' : 'Cancelled' }}</b>
                             </td>
                         </tr>
                         @endif

@@ -43,7 +43,7 @@
                         <div class="col-lg order-lg-first">
                             <ul class="nav nav-tabs border-0 flex-column flex-lg-row">
                                 <li class="nav-item">
-                                    <a href="" class="nav-link"><i class="fa fa-home fa-fw"></i> Home</a>
+                                    <a href="/admin" class="nav-link"><i class="fa fa-home fa-fw"></i> Home</a>
                                 </li>
                                 <li class="nav-item dropdown">
                                     <a href="Javascript:void(0)" class="nav-link" data-toggle="dropdown"><i class="fa fa-users"></i> Products</a>
@@ -55,9 +55,9 @@
                                 <li class="nav-item">
                                     <a href="{{ route('admin.order.list') }}" class="nav-link"><i class="fa fa-table fa-fw"></i> Order History</a>
                                 </li>
-                                <li class="nav-item">
+                                {{-- <li class="nav-item">
                                     <a href="{{ route('admin.order.list') }}" class="nav-link"><i class="fa fa-file-invoice fa-fw"></i> Invoices</a>
-                                </li>
+                                </li> --}}
                                 <li class="nav-item">
                                     <a href="{{ route('admin.user.list') }}" class="nav-link"><i class="fa fa-users fa-fw"></i> Users</a>
                                 </li>

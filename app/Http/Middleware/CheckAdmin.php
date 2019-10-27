@@ -16,7 +16,7 @@ class CheckAdmin
     public function handle($request, Closure $next)
     {
         $user = $request->user();
-        if(in_array($user->id, config('app.adminID'))){
+        if($user && in_array($user->id, config('app.adminID'))){
             return $next($request);
         }else{
             abort(401);

@@ -47,7 +47,7 @@
                         @endguest
                     </div>
                     <div class="cart">
-                        @yield('cart')
+                        <a href="/cart"><i class="fas fa-shopping-cart"></i> ({{ (isset($cart_count)) ? $cart_count : 0 }})</a>
                     </div>
                     <a href="/"><img src="{{ asset('images/logo.png') }}"></a>
                 </div>
@@ -119,11 +119,27 @@
             </div>
         </main>
 
-        <footer>
-        <div id="footer">
-
-        </div>
-        </footer>
+        <section id="footer">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-12 mt-2 mt-sm-2 text-center text-white">
+                        <ul class="list-inline">
+                            <li class="list-inline-item">
+                                <a href="/">Home</a>
+                            </li>
+                            <li class="list-inline-item">
+                                <a href="/about">About Us</a>
+                            </li>
+                            <li class="list-inline-item">
+                                <a href="/cart">Cart</a>
+                            </li>
+                        </ul>
+                        <p class="h6">&copy All right Reversed.<a class="text-green ml-2" href="/" target="_blank">SweetBite</a></p>
+                    </div>
+                    </hr>
+                </div>
+            </div>
+        </section>
     </div>
 </body>
 

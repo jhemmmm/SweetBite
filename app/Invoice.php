@@ -10,4 +10,12 @@ class Invoice extends Model{
         return $this->belongsTo(Order::class);
     }
 
+    /**
+     * Status
+     *  0 = not process
+     * 1 = paid
+     * 2 = refund
+     * 3 = cancelled
+     */
+
 }

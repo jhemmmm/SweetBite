@@ -13,7 +13,8 @@
             @endif
 
             <div class="float-right">
-                <form action="{{ route('user.order.cancel', $order->id) }}">
+                <form action="{{ route('user.order.cancel', $order->id) }}" method="POST">
+                    @csrf
                     <button class="btn btn-danger btn-sm" {{ $order->status != 3 ? 'disabled' : '' }} onclick="return confirm('Are you sure you want to cancel your order?');">Cancel Order</button>
                 </form>
             </div>
@@ -30,7 +31,7 @@
                 </div>
                 <div class="col-md-6">
                     Payment Method: <b>{{ $order->payment }}</b> <br>
-                    Total: {{ number_format($total + 50, 2) }} <br>
+                    Total: {{ number_format($order->paid_price, 2) }} <br>
                     Status: <b>{{ $order->status_type }}</b>
                 </div>
             </div>
@@ -62,12 +63,12 @@
                         </tr>
                     @endforeach
                     <tr>
-                        <td colspan="3" class="text-right"><b>Delivery Fee:</b></td>
-                        <td>{{ number_format(50, 2) }}</td>
+                        <td colspan="3" class="text-right"><b>Shipping Fee:</b></td>
+                        <td>{{ number_format(100, 2) }}</td>
                     </tr>
                     <tr>
                         <td colspan="3" class="text-right"><b>Grand Total:</b></td>
-                        <td>{{ number_format($order->paid_price + 50, 2) }}</td>
+                        <td>{{ number_format($order->paid_price, 2) }}</td>
                     </tr>
                 </tbody>
             </table>
