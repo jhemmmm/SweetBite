@@ -115,7 +115,7 @@
                                 <a href="/cart">Cart</a>
                             </li>
                         </ul>
-                        <p class="h6">&copy All right Reversed.<a class="text-green ml-2" href="/" target="_blank">SweetBite</a></p>
+                        <p class="h6">&copy All right Reversed.<a class="text-green ml-2" href="/" target="_blank">SweetBites</a></p>
                     </div>
                     </hr>
                 </div>
