@@ -35,7 +35,7 @@
                             <a href="/login"><i class="fas fa-sign-in-alt"></i> Login</a>
                             <a href="/register"><i class="fas fa-user-plus"></i> Register</a>
                         @else
-                            <a href="/user/orders"><i class="fas fa-table"></i> My Orders</a>
+                            {{-- <a href="/user/orders"><i class="fas fa-table"></i> My Orders</a>
                             <a href="/user/setting"><i class="fas fa-users-cog"></i> Setting</a>
                             <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i class="fas fa-sign-out-alt"></i> Logout</a>
                             <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
@@ -44,7 +44,27 @@
 
                             @if(in_array(auth()->id(), config('app.adminID')))
                                 <a href="/admin"><i class="fas fa-cog"></i> Admin Panel</a>
-                            @endif
+                            @endif --}}
+                            <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false" v-pre>
+                                Hi, {{ Auth::user()->name }} <span class="caret"></span>
+                            </a>
+
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="/user/orders"><i class="fas fa-table"></i> My Orders</a>
+                                <a class="dropdown-item" href="/user/setting"><i class="fas fa-users-cog"></i> Setting</a>
+                                <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                    <i class="fas fa-sign-out-alt"></i> {{ __('Logout') }}
+                                </a>
+                                @if(in_array(auth()->id(), config('app.adminID')))
+                                    <a class="dropdown-item" href="/admin"><i class="fas fa-cog"></i> Admin Panel</a>
+                                @endif
+
+                            </div>
+
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                @csrf
+                            </form>
                         @endguest
                     </div>
                     <div class="cart">
@@ -71,18 +91,6 @@
                                     <a class="nav-link" href="/register"><i class="fas fa-user-plus"></i> REGISTER</a>
                                 </li>
                             </div>
-                            {{-- <li class="nav-item">
-                                <a class="nav-link" href="/product?category=1"><i class="fas fa-star"></i> PROMO</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="/product?category=2"><i class="fas fa-cookie"></i> CHOCOLATE</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="/product?category=3"><i class="fas fa-glass-cheers"></i> BEVERAGES</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="/product?category=4"><i class="fab fa-nutritionix"></i> PILINUTS</a>
-                            </li> --}}
                             @foreach ($categories as $category)
                                 <li class="nav-item">
                                     <a class="nav-link" href="/product?category={{ $category->id }}"><i class="{{ $category->icon }}"></i> {{ $category->name }}</a>

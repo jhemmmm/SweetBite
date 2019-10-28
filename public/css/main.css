@@ -212,3 +212,21 @@ button.navbar-toggler {
     border-color: #3b190d;
 
 }
+.dropdown-menu {
+    background: #a46e5a;
+}
+.dropdown-menu > .dropdown-item:first-child{
+    border-top: 1px solid #3b190d;
+}
+.dropdown-menu > .dropdown-item{
+    border-bottom: 1px solid #3b190d;
+}
+.dropdown-menu .dropdown-item:hover{
+    background: #3b190d;
+}
+.dropdown-menu > .dropdown-item{
+    padding: 3px 10px;
+}
+.dropdown-menu > .dropdown-item i{
+    margin: 0 5px;
+}
