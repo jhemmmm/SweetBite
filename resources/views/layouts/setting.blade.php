@@ -29,12 +29,12 @@
         <div id="blackcontriner">
             <div class="container">
                 <div class="top">
-                    <div class="auth">
+                    {{-- <div class="auth">
                         @guest
                             <a href="/login"><i class="fas fa-sign-in-alt"></i> Login</a>
                             <a href="/register"><i class="fas fa-user-plus"></i> Register</a>
                         @else
-                            {{-- <a href="/user/orders"><i class="fas fa-table"></i> My Orders</a>
+                            <a href="/user/orders"><i class="fas fa-table"></i> My Orders</a>
                             <a href="/user/setting"><i class="fas fa-users-cog"></i> Setting</a>
                             <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i class="fas fa-sign-out-alt"></i> Logout</a>
                             <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
@@ -43,7 +43,7 @@
 
                             @if(in_array(auth()->id(), config('app.adminID')))
                                 <a href="/admin"><i class="fas fa-cog"></i> Admin Panel</a>
-                            @endif --}}
+                            @endif
                             <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown"
                                 aria-haspopup="true" aria-expanded="false" v-pre>
                                 Hi, {{ Auth::user()->name }} <span class="caret"></span>
@@ -65,55 +65,92 @@
                                 @csrf
                             </form>
                         @endguest
-                    </div>
+                    </div> --}}
                     <div class="cart">
                         <a href="/cart"><i class="fas fa-shopping-cart"></i> ({{ (isset($cart_count)) ? $cart_count : 0 }})</a>
                     </div>
-                    <a href="/"><img src="{{ asset('images/logo.png') }}"></a>
+                    <a href="/"><img class="mb-3" src="{{ asset('images/logo.png') }}"></a>
                 </div>
             </div>
-            <nav class="navbar navbar-expand-md">
-                <div class="container">
-                    <button class="navbar-toggler" type="button" data-toggle="collapse"
-                        data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
-                        <i class="fas fa-bars" style="color: #fff"></i>
-                    </button>
+            <nav class="navbar navbar-expand-sm">
+                    <div class="container">
+                        {{-- <a class="navbar-brand" href="#">Navbar</a> --}}
+                        <button class="navbar-toggler d-lg-none" type="button" data-toggle="collapse" data-target="#collapsibleNavId" aria-controls="collapsibleNavId"
+                            aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <div class="collapse navbar-collapse" id="collapsibleNavId">
+                            <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                                <li class="nav-item active">
+                                    <a class="nav-link" href="/">
+                                        <i class="fa fa-home" aria-hidden="true"></i>
+                                        Home
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    @php
+                                        $category = $categories->where('name', 'Promo')->first()
+                                    @endphp
 
-                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                        <ul class="navbar-nav mx-auto">
-                            <div class="loginMobile">
-                                <li class="nav-item">
-                                    <a class="nav-link" href="/login"><i class="fas fa-sign-in-alt"></i> LOGIN</a>
+                                    <a class="nav-link" href="/product?category={{ $category ? $category->id : 1 }}">
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                        Promo
+                                    </a>
+                                </li>
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" id="dropdownId" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="fa fa-align-justify" aria-hidden="true"></i>
+                                        Products
+                                    </a>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownId">
+                                        @foreach ($categories->where('name', '!=', 'Promo') as $category)
+                                            <a class="dropdown-item" href="/product?category={{ $category->id }}">{{ $category->name }}</a>
+                                        @endforeach
+                                    </div>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="/register"><i class="fas fa-user-plus"></i> REGISTER</a>
+                                    <a class="nav-link" href="/about">
+                                        <i class="fa fa-address-book" aria-hidden="true"></i>
+                                        About us
+                                    </a>
                                 </li>
-                            </div>
-                            {{-- <li class="nav-item">
-                                <a class="nav-link" href="/product?category=1"><i class="fas fa-star"></i> PROMO</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="/product?category=2"><i class="fas fa-cookie"></i> CHOCOLATE</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="/product?category=3"><i class="fas fa-glass-cheers"></i> BEVERAGES</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="/product?category=4"><i class="fab fa-nutritionix"></i> PILINUTS</a>
-                            </li> --}}
-                            @foreach ($categories as $category)
+                            </ul>
+                            <ul class="navbar-nav ml-auto">
+                                @guest
                                 <li class="nav-item">
-                                    <a class="nav-link" href="/product?category={{ $category->id }}"><i class="{{ $category->icon }}"></i> {{ $category->name }}</a>
+                                    <a class="nav-link" href="/login"><i class="fas fa-sign-in-alt"></i> Login</a>
                                 </li>
-                            @endforeach
-                        </ul>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/register"><i class="fas fa-user-plus"></i> Register</a>
+                                </li>
+                                @else
+                                <li class="nav-item dropdown">
+                                    <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                        Hi, {{ Auth::user()->name }} <span class="caret"></span>
+                                    </a>
 
+                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                        <a class="dropdown-item" href="/user/orders"><i class="fas fa-table"></i> My Orders</a>
+                                        <a class="dropdown-item" href="/user/setting"><i class="fas fa-users-cog"></i> Setting</a>
+                                        <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                            <i class="fas fa-sign-out-alt"></i> {{ __('Logout') }}
+                                        </a>
+                                        @if(in_array(auth()->id(), config('app.adminID')))
+                                            <a class="dropdown-item" href="/admin"><i class="fas fa-cog"></i> Admin Panel</a>
+                                        @endif
+
+                                    </div>
+
+                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                        @csrf
+                                    </form>
+                                </li>
+                                @endguest
+                            </ul>
+                        </div>
                     </div>
-
-                </div>
-            </nav>
-        </div>
+                </nav>
+            </div>
 
         <main class="py-4" style="min-height: 600px;">
             <div class="container">

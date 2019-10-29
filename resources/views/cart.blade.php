@@ -71,7 +71,7 @@
                                             </select>
                                         </div>
 
-                                        <button type="submit" class="btn btn-primary btn-lg btn-block mb-2">Checkout</button>
+                                        <button type="submit" class="btn btn-primary btn-lg btn-block mb-2" onclick="return confirm('Are you sure you want to checkout?')">Checkout</button>
                                         <a class="btn btn-info btn-lg btn-block my-1" href="/">ORDER MORE</a>
                                     </form>
                                 </div>
