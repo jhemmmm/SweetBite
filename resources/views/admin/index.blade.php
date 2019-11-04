@@ -72,7 +72,7 @@
                 @foreach ($orders as $order)
                     <tr>
                     <td>{{ $order->id }}</td>
-                    <td>{{ $order->user->name }}</td>
+                    <td>{{ $order->user ? $order->user->name : '-' }}</td>
                     <td>₱{{ number_format($order->paid_price, 2) }}</td>
                     <td>
                         <a href="{{ route('admin.order.view', $order->id) }}" class="btn btn-primary btn-sm">View</a>
