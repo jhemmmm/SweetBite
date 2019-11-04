@@ -45,6 +45,7 @@
                                 <li class="nav-item">
                                     <a href="/admin" class="nav-link"><i class="fa fa-home fa-fw"></i> Home</a>
                                 </li>
+                                @if(in_array(auth()->id(), config('app.adminID')))
                                 <li class="nav-item dropdown">
                                     <a href="Javascript:void(0)" class="nav-link" data-toggle="dropdown"><i class="fa fa-users"></i> Products</a>
                                     <div class="dropdown-menu dropdown-menu-arrow">
@@ -52,15 +53,18 @@
                                         <a href="{{ route('admin.product.create') }}" class="dropdown-item ">Add New Product</a>
                                     </div>
                                 </li>
+                                @endif
                                 <li class="nav-item">
                                     <a href="{{ route('admin.order.list') }}" class="nav-link"><i class="fa fa-table fa-fw"></i> Order History</a>
                                 </li>
                                 {{-- <li class="nav-item">
                                     <a href="{{ route('admin.order.list') }}" class="nav-link"><i class="fa fa-file-invoice fa-fw"></i> Invoices</a>
                                 </li> --}}
+                                @if(in_array(auth()->id(), config('app.adminID')))
                                 <li class="nav-item">
                                     <a href="{{ route('admin.user.list') }}" class="nav-link"><i class="fa fa-users fa-fw"></i> Users</a>
                                 </li>
+                                @endif
                                 {{-- <li class="nav-item dropdown">
                                     <a href="Javascript:void(0)" class="nav-link" data-toggle="dropdown"><i class="fa fa-users"></i> Users</a>
                                     <div class="dropdown-menu dropdown-menu-arrow">

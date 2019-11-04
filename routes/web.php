@@ -59,10 +59,10 @@ Route::get('test', function () {
     //     'text' => 'Using the facade to send a message.'
     // ]);
 });
-Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
+Route::group(['prefix' => 'admin', 'middleware' => ['accounting', 'admin']], function () {
     Route::get('/', 'AdminController@index');
 
-    Route::group(['prefix' => 'user'], function () {
+    Route::group(['prefix' => 'user', 'middleware' => ['admin']], function () {
         Route::get('/', 'AdminController@userLists')->name('admin.user.list');
         Route::get('/update/{id}', 'AdminController@userUpdate')->name('admin.user.update');
         Route::post('/update/{id}', 'AdminController@userPostUpdate')->name('admin.user.update.post');

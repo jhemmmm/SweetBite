@@ -4,7 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 
-class CheckAdmin
+class AccountingMiddleware
 {
     /**
      * Handle an incoming request.
@@ -16,10 +16,10 @@ class CheckAdmin
     public function handle($request, Closure $next)
     {
         $user = $request->user();
-        if($user && in_array($user->id, config('app.adminID'))){
+        if($user && in_array($user->id, config('app.accountingID'))){
             return $next($request);
         }else{
-            if($user && in_array($user->id, config('app.accountingID'))){
+            if($user && in_array($user->id, config('app.adminID'))){
                 return $next($request);
             }else{
                 abort(401);

@@ -37,20 +37,28 @@ class AdminController extends Controller{
     }
 
 
-    public function userLists(){
+    public function userLists(Request $request){
+        if(!in_array($request->user()->id, config('app.adminID'))){
+            abort(401);
+        }
         $users = User::paginate(15);
 
         return view('admin.user.list', compact('users'));
     }
 
-    public function userUpdate($id){
+    public function userUpdate(Request $request, $id){
+        if(!in_array($request->user()->id, config('app.adminID'))){
+            abort(401);
+        }
         $user = User::findOrFail($id)->first();
 
         return view('admin.user.update', compact('user'));
     }
 
     public function userPostUpdate(Request $request, $id){
-
+        if(!in_array($request->user()->id, config('app.adminID'))){
+            abort(401);
+        }
         $user = User::findOrFail($id);
 
         $request->validate([
@@ -72,7 +80,10 @@ class AdminController extends Controller{
         ]);
     }
 
-    public function userDelete($id){
+    public function userDelete(Request $request, $id){
+        if(!in_array($request->user()->id, config('app.adminID'))){
+            abort(401);
+        }
 
         $user = User::findOrFail($id);
 
@@ -87,13 +98,19 @@ class AdminController extends Controller{
 
     // Product Functions
 
-    public function productList(){
+    public function productList(Request $request){
+        if(!in_array($request->user()->id, config('app.adminID'))){
+            abort(401);
+        }
         $products = Product::orderBy('id', 'DESC')->paginate(20);
 
         return view('admin.product.list', compact('products'));
     }
 
-    public function productUpdate($id){
+    public function productUpdate(Request $request, $id){
+        if(!in_array($request->user()->id, config('app.adminID'))){
+            abort(401);
+        }
         $product = Product::findOrFail($id);
 
         $categories = Category::get();
@@ -102,6 +119,9 @@ class AdminController extends Controller{
     }
 
     public function productUpdatePost(Request $request, $id){
+        if(!in_array($request->user()->id, config('app.adminID'))){
+            abort(401);
+        }
         $request->validate([
             'title' => 'required',
             'category_id' => 'required|numeric',
@@ -128,13 +148,19 @@ class AdminController extends Controller{
         ]);
     }
 
-    public function productCreate(){
+    public function productCreate(Request $request){
+        if(!in_array($request->user()->id, config('app.adminID'))){
+            abort(401);
+        }
         $categories = Category::get();
 
         return view('admin.product.create', compact('categories'));
     }
 
     public function productStore(Request $request){
+        if(!in_array($request->user()->id, config('app.adminID'))){
+            abort(401);
+        }
         $request->validate([
             'title' => 'required',
             'category_id' => 'required|numeric',
@@ -158,7 +184,10 @@ class AdminController extends Controller{
 
     }
 
-    public function productDelete($id){
+    public function productDelete(Request $request, $id){
+        if(!in_array($request->user()->id, config('app.adminID'))){
+            abort(401);
+        }
         $product = Product::findOrFail($id);
 
         $product->delete();
@@ -227,8 +256,6 @@ class AdminController extends Controller{
                 $q->with(['address', 'user']);
             }
         ])->findOrFail($id);
-
-        // dd($invoice);
 
         return view('admin.invoice.view', compact('invoice'));
     }
