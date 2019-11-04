@@ -19,7 +19,7 @@ class AdminController extends Controller{
 
     public function index(){
 
-        $orders = Order::orderBy('created_at', 'DESC')->whereIn('status', [3])->whereDate('created_at', Carbon::now()->toDateString())->paginate(10);
+        $orders = Order::orderBy('created_at', 'DESC')->whereHas('user')->whereIn('status', [3])->whereDate('created_at', Carbon::now()->toDateString())->paginate(10);
 
         $shipped = Order::where('status', 2)->count();
 
@@ -172,19 +172,19 @@ class AdminController extends Controller{
     // order list function
 
     public function orderLists(){
-        $orders = Order::latest()->paginate(20);
+        $orders = Order::latest()->whereHas('user')->paginate(20);
 
         return view('admin.order.list', compact('orders'));
     }
 
     public function orderView($id){
-        $order = Order::findOrFail($id);
+        $order = Order::whereHas('user')->findOrFail($id);
 
         return view('admin.order.view', compact('order'));
     }
 
     public function orderUpdateStatus(Request $request, $id){
-        $order = Order::with('invoice')->findOrFail($id);
+        $order = Order::with('invoice')->whereHas('user')->findOrFail($id);
 
         $number = $order->address->mobile_number;
 
