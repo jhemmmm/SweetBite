@@ -50,7 +50,7 @@ class AdminController extends Controller{
         if(!in_array($request->user()->id, config('app.adminID'))){
             abort(401);
         }
-        $user = User::findOrFail($id)->first();
+        $user = User::findOrFail($id);
 
         return view('admin.user.update', compact('user'));
     }
