@@ -39,6 +39,7 @@
                                 <form method="POST" action="{{ route('admin.product.delete', $product->id) }}">
                                     @csrf
                                     {{ method_field('DELETE') }}
+                                    <a class="btn btn-secondary btn-sm" href="{{ route('admin.product.report', $product->id) }}">Info</a>
                                     <a class="btn btn-primary btn-sm" href="{{ route('admin.product.update', $product->id) }}">Update</a>
                                     <button class="btn btn-danger btn-sm"  onclick="return confirm('Are you sure you want to delete this product?');">Delete</button>
                                 </form>

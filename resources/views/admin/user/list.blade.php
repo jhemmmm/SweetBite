@@ -31,7 +31,7 @@
                                 @csrf
                                 {{ method_field('DELETE') }}
                                 <a class="btn btn-primary btn-sm" href="{{ route('admin.user.update', $user->id) }}">Update</a>
-                                @if(!in_array($user->id, config('app.adminID')) && !in_array($user->id, config('app.accountingID')))
+                                @if(!in_array($user->id, config('app.adminID')) && !in_array($user->id, config('app.processingID')) && !in_array($user->id, config('app.inventoryID')))
                                     <button class="btn btn-danger btn-sm"  onclick="return confirm('Are you sure you want to delete this user?');">Delete</button>
                                 @endif
                             </form>

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Category;
 use App\Invoice;
 use App\Order;
+use App\OrderProduct;
 use App\Product;
 use App\User;
 use Carbon\Carbon;
@@ -19,12 +20,15 @@ class AdminController extends Controller{
 
     public function index(){
 
+        if(in_array(auth()->id(), config('app.inventoryID'))){
+            return redirect()->route('admin.product.list');
+        }
+
         $orders = Order::orderBy('created_at', 'DESC')->whereHas('user')->whereIn('status', [3])->whereDate('created_at', Carbon::now()->toDateString())->paginate(10);
 
-        $shipped = Order::where('status', 2)->count();
+        $shipped = Order::where('status', 2)->whereDate('created_at', Carbon::now()->toDateString())->count();
 
         $dailyEarnings = Order::whereDate('created_at', Carbon::now()->toDateString())->select(DB::raw('sum(paid_price) as total_amount'))->first();
-;
 
         $pendingPayments = Order::whereDate('created_at', Carbon::now()->toDateString())->where('status', 0)->count();
 
@@ -34,6 +38,25 @@ class AdminController extends Controller{
 
 
         return view('admin.index', compact('orders', 'shipped', 'dailyEarnings', 'pendingPayments', 'cancelled', 'refunded'));
+    }
+
+    public function report($type){
+        if($type == 'orders' || $type == 'earnings'){
+            $reports = Order::whereIn('status', [3,2])->get()->groupBy(function($item) {
+                return $item->created_at->day;
+            })->sortBy(function($item, $key){
+                return $key;
+            }, SORT_REGULAR, true);
+        }elseif($type == 'cancelled'){
+            $reports = Order::whereIn('status', [3,2])->get()->groupBy(function($item) {
+                return $item->created_at->day;
+            })->sortBy(function($item, $key){
+                return $key;
+            }, SORT_REGULAR, true);
+        }else{
+            abort(404);
+        }
+        return view('admin.reports', compact('reports', 'type'));
     }
 
 
@@ -99,7 +122,7 @@ class AdminController extends Controller{
     // Product Functions
 
     public function productList(Request $request){
-        if(!in_array($request->user()->id, config('app.adminID'))){
+        if(!in_array($request->user()->id, config('app.adminID')) && !in_array($request->user()->id, config('app.inventoryID'))){
             abort(401);
         }
         $products = Product::orderBy('id', 'DESC')->paginate(20);
@@ -107,8 +130,20 @@ class AdminController extends Controller{
         return view('admin.product.list', compact('products'));
     }
 
+    public function productReport(Request $request, $id){
+        if(!in_array($request->user()->id, config('app.adminID')) && !in_array($request->user()->id, config('app.inventoryID'))){
+            abort(401);
+        }
+        $product = Product::with(['orderProducts' => function($q){
+            $q->latest();
+        }])->findOrFail($id);
+
+        return view('admin.product.view', compact('product'));
+
+    }
+
     public function productUpdate(Request $request, $id){
-        if(!in_array($request->user()->id, config('app.adminID'))){
+        if(!in_array($request->user()->id, config('app.adminID')) && !in_array($request->user()->id, config('app.inventoryID'))){
             abort(401);
         }
         $product = Product::findOrFail($id);
@@ -119,7 +154,7 @@ class AdminController extends Controller{
     }
 
     public function productUpdatePost(Request $request, $id){
-        if(!in_array($request->user()->id, config('app.adminID'))){
+        if(!in_array($request->user()->id, config('app.adminID')) && !in_array($request->user()->id, config('app.inventoryID'))){
             abort(401);
         }
         $request->validate([
@@ -149,7 +184,7 @@ class AdminController extends Controller{
     }
 
     public function productCreate(Request $request){
-        if(!in_array($request->user()->id, config('app.adminID'))){
+        if(!in_array($request->user()->id, config('app.adminID')) && !in_array($request->user()->id, config('app.inventoryID'))){
             abort(401);
         }
         $categories = Category::get();
@@ -158,7 +193,7 @@ class AdminController extends Controller{
     }
 
     public function productStore(Request $request){
-        if(!in_array($request->user()->id, config('app.adminID'))){
+        if(!in_array($request->user()->id, config('app.adminID')) && !in_array($request->user()->id, config('app.inventoryID'))){
             abort(401);
         }
         $request->validate([
@@ -185,7 +220,7 @@ class AdminController extends Controller{
     }
 
     public function productDelete(Request $request, $id){
-        if(!in_array($request->user()->id, config('app.adminID'))){
+        if(!in_array($request->user()->id, config('app.adminID')) && !in_array($request->user()->id, config('app.inventoryID'))){
             abort(401);
         }
         $product = Product::findOrFail($id);

@@ -47,20 +47,9 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
         Route::post('/{id}', 'UserController@orderCancel')->name('user.order.cancel');
     });
 });
-use Nexmo\Laravel\Facade\Nexmo;
-Route::get('test', function () {
-
-
-    dd($number);
-
-    // Nexmo::message()->send([
-    //     'to'   => '639473430305',
-    //     'from' => '639217421936',
-    //     'text' => 'Using the facade to send a message.'
-    // ]);
-});
-Route::group(['prefix' => 'admin', 'middleware' => ['accounting', 'admin']], function () {
+Route::group(['prefix' => 'admin', 'middleware' => ['processing', 'admin', 'inventory']], function () {
     Route::get('/', 'AdminController@index');
+    Route::get('/reports/{type}', 'AdminController@report')->name('admin.report');
 
     Route::group(['prefix' => 'user', 'middleware' => ['admin']], function () {
         Route::get('/', 'AdminController@userLists')->name('admin.user.list');
@@ -75,6 +64,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['accounting', 'admin']], fun
         Route::get('/update/{id}', 'AdminController@productUpdate')->name('admin.product.update');
         Route::post('/update/{id}', 'AdminController@productUpdatePost')->name('admin.product.update.post');
         Route::delete('/delete/{id}', 'AdminController@productDelete')->name('admin.product.delete');
+        Route::get('/{id}', 'AdminController@productReport')->name('admin.product.report');
     });
 
     Route::group(['prefix' => 'order'], function () {

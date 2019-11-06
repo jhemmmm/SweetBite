@@ -135,7 +135,7 @@
                                         <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                             <i class="fas fa-sign-out-alt"></i> {{ __('Logout') }}
                                         </a>
-                                        @if(in_array(auth()->id(), config('app.adminID')))
+                                        @if(in_array(auth()->id(), config('app.adminID')) || in_array(auth()->id(), config('app.processingID')) || in_array(auth()->id(), config('app.inventoryID')))
                                             <a class="dropdown-item" href="/admin"><i class="fas fa-cog"></i> Admin Panel</a>
                                         @endif
 

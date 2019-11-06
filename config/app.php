@@ -19,8 +19,12 @@ return [
         1
     ],
 
-    'accountingID' => [
+    'processingID' => [
         2
+    ],
+
+    'inventoryID' => [
+        3
     ],
 
     /*

@@ -53,6 +53,10 @@ class CartController extends Controller
         if(!Auth::id())
             return redirect()->route('login');
 
+        if(in_array($request->user()->id, config('app.adminID'))){
+            abort(401);
+        }
+
         $id = $request->id;
         if(!$id)
             return redirect()->route('cart');
@@ -77,6 +81,9 @@ class CartController extends Controller
 
     public function orderItem(Request $request)
     {
+        if(in_array($request->user()->id, config('app.adminID'))){
+            abort(401);
+        }
 
         foreach($request->product_ids as $index => $product_id){
             $quantity = $request->product_quantities[$index];
