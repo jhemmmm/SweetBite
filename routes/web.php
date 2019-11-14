@@ -25,6 +25,8 @@ Route::post('/cart/OrderItem', 'CartController@orderItem')->name('OrderItem');
 
 Route::get('/order/{id}/success', 'CartController@orderSuccess')->name('order.success');
 
+Route::get('/provinces/cities', 'HomeController@cities');
+
 Auth::routes();
 Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
     Route::get('/setting', 'UserController@setting')->name('user.setting');

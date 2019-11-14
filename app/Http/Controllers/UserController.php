@@ -59,7 +59,11 @@ class UserController extends Controller{
     }
 
     public function createAddress(){
-        return view('user.address.create');
+        $provinces = resource_path('json/provinces.json');
+
+        $provinces = json_decode(file_get_contents($provinces), true);
+
+        return view('user.address.create', compact('provinces'));
     }
 
     public function createAddressPost(Request $request){
@@ -99,7 +103,20 @@ class UserController extends Controller{
         $user = $request->user();
         $address = Address::where('user_id', $user->id)->where('id', $id)->firstOrFail();
 
-        return view('user.address.edit', compact('address'));
+        $provinces = resource_path('json/provinces.json');
+
+        $provinces = json_decode(file_get_contents($provinces), true);
+
+        $cities = resource_path('json/fulL_set.json');
+
+        $cities = json_decode(file_get_contents($cities), true);
+
+        $cities = collect($cities);
+
+        $cities = $cities->where('name', $address->province)->first()['cities'];
+
+
+        return view('user.address.edit', compact('address', 'provinces', 'cities'));
     }
 
     public function editAddressPost(Request $request, $id){

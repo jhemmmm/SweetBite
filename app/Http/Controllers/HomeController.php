@@ -10,10 +10,17 @@ use Auth;
 
 class HomeController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $categories = Category::get();
-        $products = Product::where('quantity', '>', 0)->paginate(14);
+        $products = Product::where('quantity', '>', 0);
+
+        if($request->q){
+            $products->where('title', 'LIKE', '%'.$request->q.'%');
+        }
+
+        $products = $products->paginate(14);
+
 
         return view('welcome', [
             'categories' => $categories,
@@ -32,12 +39,19 @@ class HomeController extends Controller
             abort(404);
 
         $categories = Category::get();
-        $products = Product::where('category_id', $category_id)->where('quantity', '>', 0)->paginate(14);
+        $products = Product::where('category_id', $category_id)->where('quantity', '>', 0);
+
+        if($request->q){
+            $products->where('title', 'LIKE', '%'.$request->q.'%');
+        }
+
+        $products = $products->paginate(14);
         $cart = null;
 
         if(Auth::id())
             $cart = Cart::where('user_id', Auth::id())->count();
         return view('welcome', [
+            'category' => $category_id,
             'categories' => $categories,
             'products' => $products,
             'cart_count' => $cart,
@@ -48,5 +62,19 @@ class HomeController extends Controller
         $product = Product::where('id', $id)->firstOrFail();
 
         return view('product.details', compact('product'));
+    }
+
+    public function cities(Request $request){
+        $cities = resource_path('json/fulL_set.json');
+
+        $cities = json_decode(file_get_contents($cities), true);
+
+        $cities = collect($cities);
+
+        return response()->json([
+            'status' => true,
+            'cities' => $cities->where('key', $request->province)->first()['cities']
+        ]);
+
     }
 }

@@ -47,18 +47,27 @@
                 </div>
                 <div class="row">
                     <div class="form-group col-md-6">
-                        <label for="">City</label>
-                        <input type="text" name="city" class="form-control @error('city') is-invalid @enderror" value="{{ old('city') }}">
-                        @error('city')
+                        <label for="">Province</label>
+                        {{-- <input type="text" name="province" class="form-control @error('province') is-invalid @enderror" value="{{ old('province') }}"> --}}
+                        <select name="province" id="province" class="form-control @error('province') is-invalid @enderror" required>
+                            <option value="">Select Province</option>
+                            @foreach($provinces as $province)
+                                <option value="{{ $province['name'] }}" data-key="{{$province['key'] }}">{{ $province['name'] }}</option>
+                            @endforeach
+                        </select>
+                        @error('province')
                         <span class="invalid-feedback" role="alert">
                             <strong>{{ $message }}</strong>
                         </span>
                         @enderror
                     </div>
                     <div class="form-group col-md-6">
-                        <label for="">Province</label>
-                        <input type="text" name="province" class="form-control @error('province') is-invalid @enderror" value="{{ old('province') }}">
-                        @error('province')
+                        <label for="">City</label>
+                        {{-- <input type="text" name="city" class="form-control @error('city') is-invalid @enderror" value="{{ old('city') }}"> --}}
+                        <select name="city" id="city" class="form-control @error('city') is-invalid @enderror" required>
+                            <option value="">Select City</option>
+                        </select>
+                        @error('city')
                         <span class="invalid-feedback" role="alert">
                             <strong>{{ $message }}</strong>
                         </span>
@@ -74,4 +83,25 @@
             </form>
         </div>
     </div>
+
+<script>
+    $(function(){
+        $('select#province').change(function(e){
+            $('select#city').html('<option value="">Select City</option>');
+
+            var element = $(this).find('option:selected');
+            var myTag = element.attr("data-key");
+
+            $.get('/provinces/cities', {
+                province: myTag
+            }, function(data){
+                if(data.status){
+                    data.cities.forEach(element => {
+                        $('select#city').append('<option value="'+ element['name'] +'">'+ element['name'] +'</option>');
+                    });
+                }
+            })
+        })
+    })
+</script>
 @endsection

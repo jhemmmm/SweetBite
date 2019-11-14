@@ -35,6 +35,23 @@
     {{-- <div class="row justify-content-center"> --}}
     <div class="row">
 
+        <div class="col-md-12">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <form method="GET">
+                        <div class="input-group ">
+                            <input type="text" class="form-control" placeholder="Search" name="q" value="{{ request()->get('q') }}">
+                            <div class="input-group-append">
+                                @if(isset($category))
+                                    <input type="hidden" name="category" value="{{ $category }}">
+                                @endif
+                                <button class="btn btn-primary" type="submit">Search!</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
         @foreach($products as $product)
         {{-- <div class="col-sm-12 col-lg-6 p-1">
             <div class="gallery">

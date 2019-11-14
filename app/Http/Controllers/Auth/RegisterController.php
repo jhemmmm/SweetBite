@@ -41,6 +41,37 @@ class RegisterController extends Controller
         $this->middleware('guest');
     }
 
+    public function showRegistrationForm()
+    {
+        $provinces = resource_path('json/provinces.json');
+
+        $provinces = json_decode(file_get_contents($provinces), true);
+        // $provinces = collect($provinces);
+
+        // $cities = resource_path('json/cities.json');
+        // $cities = json_decode(file_get_contents($cities), true);
+
+
+        // foreach($provinces as $key => $province){
+        //     foreach($cities as $city){
+        //         if($province['key'] == $city['province']){
+        //             if(!isset($provinces[$key]['cities'])){
+        //                 $provinces[$key]['cities'] = [];
+        //                 array_push($provinces[$key]['cities'], $city);
+        //             }else{
+        //                 array_push($provinces[$key]['cities'], $city);
+        //             }
+        //         }
+        //     }
+        // }
+
+        // $provinces = collect($provinces)->toJson();
+
+        // dd($provinces);
+
+        return view('auth.register', compact('provinces'));
+    }
+
     /**
      * Get a validator for an incoming registration request.
      *
