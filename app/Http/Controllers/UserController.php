@@ -107,7 +107,7 @@ class UserController extends Controller{
 
         $provinces = json_decode(file_get_contents($provinces), true);
 
-        $cities = resource_path('json/fulL_set.json');
+        $cities = resource_path('json/full_set.json');
 
         $cities = json_decode(file_get_contents($cities), true);
 

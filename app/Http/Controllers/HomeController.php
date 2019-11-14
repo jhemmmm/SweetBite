@@ -65,7 +65,7 @@ class HomeController extends Controller
     }
 
     public function cities(Request $request){
-        $cities = resource_path('json/fulL_set.json');
+        $cities = resource_path('json/full_set.json');
 
         $cities = json_decode(file_get_contents($cities), true);
 
